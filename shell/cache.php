@@ -9,7 +9,7 @@
  *
  * @category    Guidance
  * @package     Mage_Shell
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2010 Ticean Bennett (http://ticean.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
