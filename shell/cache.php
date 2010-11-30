@@ -94,47 +94,79 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
     public function run()
     {
         if ($this->getArg('info')) {
-            //TODO: Add back the Beta.
             foreach($this->_getCacheTypes() as $cache) {
                 echo $cache->id . ': ' . $cache->cache_type . "\n";
             }
-        } else if ($this->getArg('clear') || $this->getArg('clearall')) {
-            if ($this->getArg('clear')) {
-                $cachetypes = $this->_parseCacheTypeString($this->getArg('clear'));
-            } else {
-                $cachetypes = $this->_parseCacheTypeString('all');
-            }
-            foreach ($cachetypes as $cachekey => $cachetype) {
-                /* @var $process Mage_Index_Model_Process */
-                try {
-                    Mage::app()->cleanCache($cachekey);
-                    echo $cachekey . " cache cleared.\n";
-                } catch (Mage_Core_Exception $e) {
-                    echo $e->getMessage() . "\n";
-                } catch (Exception $e) {
-                    echo $cachekey . " cache unknown error:\n";
-                    echo $e . "\n";
-                }
-            }
-
         } else if ($this->getArg('status')) {
-            if ($this->getArg('status')) {
-                $cachetypes = $this->_parseCacheTypeString($this->getArg('status'));
-            } else {
-                $cachetypes = $this->_parseCacheTypeString('all');
-            }
-            foreach ($cachetypes as $cachekey) {
+            //TODO: Implement status.
+            echo '--status arg is not yet implemented.' . "\n";
+
+        // --flush
+        } else if ($this->getArg('flush')) {
+            $type = $this->getArg('flush');
+            if($type == 'magento') {
                 try {
-                    Mage::app()->cleanCache($cachekey);
-                    echo $cachetype . " cache cleared.\n";
-                } catch (Mage_Core_Exception $e) {
-                    echo $e->getMessage() . "\n";
+                    Mage::app()->cleanCache();
+                    echo "The Magento cache storage has been flushed.\n";
                 } catch (Exception $e) {
-                    echo $cachetype . " cache unknown error:\n";
+                    echo "Exception:\n";
                     echo $e . "\n";
                 }
+            } else if($type == 'storage') {
+                try {
+                    Mage::app()->getCacheInstance()->flush();
+                    echo "The cache storage has been flushed.\n";
+                } catch (Exception $e) {
+                    echo "Exception:\n";
+                    echo $e . "\n";
+                }
+            } else {
+                echo "The flush type must be magento|storage\n";
             }
 
+        // --refresh
+        } else if ($this->getArg('refresh')) {
+            if ($this->getArg('refresh')) {
+                $types = $this->_parseCacheTypeString($this->getArg('refresh'));
+            } else {
+                $types = $this->_parseCacheTypeString('all');
+            }
+            $updatedTypes = 0;
+            if (!empty($types)) {
+                foreach ($types as $type) {
+                    try {
+                        $tags = Mage::app()->getCacheInstance()->cleanType($type);
+                        $updatedTypes++;
+                    } catch (Exception $e) {
+                        echo $type . " cache unknown error:\n";
+                        echo $e . "\n";
+                    }
+                }
+            }
+            if ($updatedTypes > 0) {
+                echo "$updatedTypes cache type(s) refreshed.\n";
+            }
+
+        // help
+        } else if ($this->getArg('cleanmedia')) {
+            try {
+                Mage::getModel('core/design_package')->cleanMergedJsCss();
+                Mage::dispatchEvent('clean_media_cache_after');
+                echo "The JavaScript/CSS cache has been cleaned.\n";
+            }
+            catch (Exception $e) {
+                echo "An error occurred while clearing the JavaScript/CSS cache.\n";
+                echo $e->toString() . "\n";
+            }
+        } else if ($this->getArg('cleanimages')) {
+            try {
+                Mage::getModel('catalog/product_image')->clearCache();
+                Mage::dispatchEvent('clean_catalog_images_cache_after');
+                echo "The image cache was cleaned.\n";
+            }
+            catch (Mage_Core_Exception $e) {
+                $this->_getSession()->addError($e->getMessage());
+            }
         } else {
             echo $this->usageHelp();
         }
@@ -150,11 +182,17 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
 Usage:  php -f cache.php -- [options]
   info                          Show Magento cache types.
   --status <cachetype>          Show cache status
-  --clear <cachetype>           Clear cache.
-  clearall                      Clear cache for all cachetypes.
-  help                          This help
+  --enable <cachetype>          Enable caching for a cachetype.
+  --disable <cachetype>         Disable caching for a cachetype.
+  --refresh <cachetype>         Clean cache types.
+  --flush <magento|storage>     Flushes slow|fast cache storage.
 
-  <cachetype>     Comma separated cache codes or value "all" for all indexers
+  cleanmedia                  Clean the JS/CSS cache.
+  cleanimages                 Clean the image cache.
+  destroy                       Clear all caches.
+  help                          This help.
+
+  <cachetype>     Comma separated cache codes or value "all" for all caches
 
 USAGE;
     }
