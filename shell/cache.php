@@ -206,6 +206,10 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
                 $this->_getSession()->addError($e->getMessage());
             }
 
+        // destroy
+        } else if ($this->getArg('cleanimages')) {
+            echo "Destroy is not yet implemented.\n"
+
         // help
         } else {
             echo $this->usageHelp();
