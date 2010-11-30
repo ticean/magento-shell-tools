@@ -1,2 +1,31 @@
+magento-cache-shell
+===================
+
 Mage_Shell script that interfaces with the Magento cache.
+
+
+Description
+-------------------
+
+Magento base code supplies a set of shell scripts for Magento CLI. Unfortunately, they did not include a shell interface
+ for the cache.  magento-shell-cache fills the gaps.
+
+
+
+Requirements
+-------------------
+
+Magento (with shell)
+  - Developed on EE 1.9
+
+
+Installation
+--------------------
+
+Copy to your Magento /shell directory.
+
+
+License
+-------------------
+http://www.opensource.org/licenses/osl-3.0.php
 
