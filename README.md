@@ -11,18 +11,25 @@ Magento base code supplies a set of shell scripts for Magento CLI. Unfortunately
  for the cache.  magento-shell-cache fills the gaps.
 
 
+Usage
+-------------------
+
+You can use this shell script like the other Magento shells. Help is provided.
+
+    php -f cache.php
+
 
 Requirements
 -------------------
 
-Magento (with shell)
-  - Developed on EE 1.9
+Magento (with shell). The script was developed on EE 1.9, but should work with any Magento version that has the /shell
+directory.
 
 
 Installation
 --------------------
 
-Copy to your Magento /shell directory.
+Copy cache.php to your Magento /shell directory.
 
 
 License
