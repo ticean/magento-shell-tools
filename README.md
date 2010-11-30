@@ -16,7 +16,7 @@ Usage
 
 You can use this shell script like the other Magento shells. Help is provided.
 
-    php -f cache.php
+    php -F cache.php
 
 
 Requirements
