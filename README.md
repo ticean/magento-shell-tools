@@ -1,4 +1,4 @@
-magento-cache-shell
+magento-shell-cache
 ===================
 
 Mage_Shell script that interfaces with the Magento cache.
