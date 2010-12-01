@@ -204,6 +204,15 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         }
     }
 
+    public function destroy() {
+        $types = $this->_parseCacheTypeString('all');
+        $this->refresh($types);
+        $this->cleanImages();
+        $this->cleanMedia();
+        $this->flushSystem();
+        $this->flushAll();
+    }
+
     /**
      * Run script
      *
@@ -216,11 +225,13 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         } else if ($this->getArg('enable')) {
             $types = $this->_parseCacheTypeString($this->getArg('enable'));
             $this->enable($types);
+
         // --disable
         } else if ($this->getArg('disable')) {
             $types = $this->_parseCacheTypeString($this->getArg('disable'));
             echo print_r($types, true);
             $this->disable($types);
+
         // --flush
         } else if ($this->getArg('flush')) {
             $type = $this->getArg('flush');
@@ -231,6 +242,7 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
             } else {
                 echo "The flush type must be magento|storage\n";
             }
+
         // --refresh
         } else if ($this->getArg('refresh')) {
             if ($this->getArg('refresh')) {
@@ -239,16 +251,18 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
                 $types = $this->_parseCacheTypeString('all');
             }
             $this->refresh($types);
+
         // cleanmedia
         } else if ($this->getArg('cleanmedia')) {
             $this->cleanMedia();
-        // cleanimages    
+
+        // cleanimages
         } else if ($this->getArg('cleanimages')) {
             $this->cleanImages();
 
         // destroy
         } else if ($this->getArg('destroy')) {
-            echo "Destroy is not yet implemented.\n";
+            $this->destroy();
 
         // help
         } else {
