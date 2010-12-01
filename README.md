@@ -16,8 +16,20 @@ Usage
 
 You can use this shell script like the other Magento shells. Help is provided.
 
-    php -F cache.php
+    Usage:  php -f cache.php -- [options]
+      info                          Show Magento cache types.
+      --enable <cachetype>          Enable caching for a cachetype.
+      --disable <cachetype>         Disable caching for a cachetype.
+      --refresh <cachetype>         Clean cache types.
+      --flush <magento|storage>     Flushes slow|fast cache storage.
 
+      cleanmedia                    Clean the JS/CSS cache.
+      cleanimages                   Clean the image cache.
+      destroy                       Clear all caches.
+      help                          This help.
+
+      <cachetype>     Comma separated cache codes or value "all" for all caches
+    
 
 Requirements
 -------------------
