@@ -79,6 +79,10 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         return Mage::helper('core')->getCacheBetaTypes();
     }
 
+    private function _getInvalidatedTypes() {
+        return Mage::getModel('core/cache')->getInvalidatedTypes();
+    }
+
     /**
      * Gets an array of cache type code.
      * @return array Cache type codes.
@@ -92,8 +96,19 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
      * @return void
      */
     public function info() {
+        $invalidTypes = $this->_getInvalidatedTypes();
         foreach($this->_getCacheTypes() as $cache) {
-            echo $cache->id . ': ' . $cache->cache_type . "\n";
+            $enabled = ($cache->status)? 'Enabled':'Disabled';
+            if($enabled=='Enabled') {
+                $invalid = (array_key_exists($cache, $invalidTypes))? 'Invalid':'Valid';
+            } else {
+                $invalid = 'N/A';
+            }
+
+            echo sprintf('%-16s', $cache->id);
+            echo sprintf('%-12s', $enabled);
+            echo sprintf('%-10s', $invalid);
+            echo  $cache->cache_type . "\n";
         }
     }
 
@@ -212,7 +227,8 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         // --disable
         } else if ($this->getArg('disable')) {
             $types = $this->_parseCacheTypeString($this->getArg('disable'));
-            $this->disable(types);
+            echo print_r($types, true);
+            $this->disable($types);
         // --flush
         } else if ($this->getArg('flush')) {
             $type = $this->getArg('flush');
