@@ -112,11 +112,6 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         }
     }
 
-    public function status() {
-        //TODO: Implement status.
-        echo '--status arg is not yet implemented.' . "\n";
-    }
-
     public function enable($types) {
         $allTypes = Mage::app()->useCache();
         $updatedTypes = 0;
@@ -218,9 +213,6 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         // info
         if ($this->getArg('info')) {
             $this->info();
-        } else if ($this->getArg('status')) {
-            $this->status();
-        // --enable
         } else if ($this->getArg('enable')) {
             $types = $this->_parseCacheTypeString($this->getArg('enable'));
             $this->enable($types);
@@ -273,7 +265,6 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         return <<<USAGE
 Usage:  php -f cache.php -- [options]
   info                          Show Magento cache types.
-  --status <cachetype>          Show cache status
   --enable <cachetype>          Enable caching for a cachetype.
   --disable <cachetype>         Disable caching for a cachetype.
   --refresh <cachetype>         Clean cache types.
