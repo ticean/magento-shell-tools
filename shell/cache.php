@@ -79,6 +79,10 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         return Mage::helper('core')->getCacheBetaTypes();
     }
 
+    /**
+     * Gets a list of invalidated cache types that should be refreshed.
+     * @return array Array of invalidated types.
+     */
     private function _getInvalidatedTypes() {
         return Mage::getModel('core/cache')->getInvalidatedTypes();
     }
@@ -112,6 +116,11 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         }
     }
 
+    /**
+     * Enables caching for provided array of cache types.
+     * @param  $types An array of cache types.
+     * @return void
+     */
     public function enable($types) {
         $allTypes = Mage::app()->useCache();
         $updatedTypes = 0;
@@ -127,6 +136,11 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         }
     }
 
+    /**
+     * Disables caching for provided array of cache types.
+     * @param  $types An array of cache types.
+     * @return void
+     */
     public function disable($types) {
         $allTypes = Mage::app()->useCache();
         $updatedTypes = 0;
@@ -143,6 +157,11 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         }
     }
 
+    /**
+     * Flushes the cache storage (Magentos "fast" caching). Flushing cache storage can clear other shared cache data on
+     * the storage. Please take care when using this method..
+     * @return void
+     */
     public function flushAll() {
         try {
             Mage::app()->getCacheInstance()->flush();
@@ -153,6 +172,10 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         }
     }
 
+    /**
+     * Flushes the Magento cache (Magentos "slow" caching).
+     * @return void
+     */
     public function flushSystem() {
         try {
             Mage::app()->cleanCache();
@@ -163,6 +186,11 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         }
     }
 
+    /**
+     * Refreshes caches for the provided cache types.
+     * @param  $types
+     * @return void
+     */
     public function refresh($types) {
         $updatedTypes = 0;
         if (!empty($types)) {
@@ -181,6 +209,10 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         }
     }
 
+    /**
+     * Clears the merged JS/CSS cache.
+     * @return void
+     */
     public function cleanMedia() {
         try {
             Mage::getModel('core/design_package')->cleanMergedJsCss();
@@ -193,6 +225,10 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         }
     }
 
+    /**
+     * Clears the image cache.
+     * @return void
+     */
     public function cleanImages() {
         try {
             Mage::getModel('catalog/product_image')->clearCache();
@@ -204,6 +240,10 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
         }
     }
 
+    /**
+     * Clears all possible Magento cache in one command. Be careful, This will DESTROY the cache!
+     * @return void
+     */
     public function destroy() {
         $types = $this->_parseCacheTypeString('all');
         $this->refresh($types);
