@@ -10,7 +10,7 @@
  * @category    Guidance
  * @package     Mage_Shell
  * @copyright   Copyright (c) 2010 Ticean Bennett (http://ticean.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @license     http://www.opensource.org/licenses/osl-3.0.php
  */
 
 require_once 'abstract.php';
@@ -20,7 +20,7 @@ require_once 'abstract.php';
  *
  * @category    Guidance
  * @package     Mage_Shell
- * @author      Magento Core Team <core@magentocommerce.com>
+ * @author      Ticean Bennett
  */
 class Guidance_Shell_Cache extends Mage_Shell_Abstract
 {
