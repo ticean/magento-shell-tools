@@ -25,7 +25,7 @@ require_once 'abstract.php';
 class Guidance_Shell_Cache extends Mage_Shell_Abstract
 {
     /**
-     * Parse string with indexers and return array of indexer instances
+     * Returns a list of cachetypes, and their current cache status.
      *
      * @param string $string
      * @return array
