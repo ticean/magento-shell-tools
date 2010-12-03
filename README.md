@@ -10,6 +10,8 @@ Description
 Magento base code supplies a set of shell scripts for Magento CLI. Unfortunately, they did not include a shell interface
  for the cache.  magento-shell-cache fills the gaps.
 
+Perfect for use in deployment scripts.
+
 
 Usage
 -------------------
