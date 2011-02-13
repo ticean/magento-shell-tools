@@ -16,10 +16,10 @@ This projects aims to augment the CLI interface and provide some useful tools.
 The Tools
 -------------------
 
- - *cache*: All functionality that exists in the admin cache management panel. Plus some more!
+ - **cache**: All functionality that exists in the admin cache management panel. Plus some more!
    Really useful in deployment scripts.
  - More to be added...
-         I
+
 
 Usage
 -------------------
