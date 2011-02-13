@@ -1,22 +1,31 @@
-magento-shell-cache
+magento-shell-tools
 ===================
 
-Mage_Shell script that interfaces with the Magento cache.
+Mage_Shell scripts to help manage Magento installations.
 
 
 Description
 -------------------
 
-Magento base code supplies a set of shell scripts for Magento CLI. Unfortunately, they did not include a shell interface
- for the cache.  magento-shell-cache fills the gaps.
+Magento contains a little-known shell abstract class to manage Magento via CLI.
+While there are a few concrete classes, the core doesn't ship with much functionality.
+This projects aims to augment the CLI interface and provide some useful tools.
 
-Perfect for use in deployment scripts.
 
+
+The Tools
+-------------------
+
+ - *cache*: All functionality that exists in the admin cache management panel. Plus some more!
+   Really useful in deployment scripts.
+ - More to be added...
+         I
 
 Usage
 -------------------
-
 You can use this shell script like the other Magento shells. Help is provided.
+
+Here's example help output from the cache tool:
 
     Usage:  php -f cache.php -- [options]
       info                          Show Magento cache types.
@@ -43,7 +52,7 @@ directory.
 Installation
 --------------------
 
-Copy cache.php to your Magento /shell directory.
+Installation is very simple! Clone/copy the contents of /shell to your Magento /shell directory.
 
 
 License
