@@ -18,7 +18,9 @@ The Tools
 
  - **cache**: All functionality that exists in the admin cache management panel. Plus some more!
    Really useful in deployment scripts.
- - More to be added...
+ - **snapshot**: Create a compressed tar archive of the /media directory and a database dump into 
+   a directory called /snapshot.  Useful for developers bootstrapping their local environments off 
+   of an existing development environment.
 
 
 Usage
