@@ -26,6 +26,10 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract
      */
     function _snapshot()
     {
+        if (!Mage::isInstalled()) {
+            echo "Application is not installed yet, please complete install wizard first.";
+            exit;
+        }
         # Initialize configuration values
         $connection = Mage::getConfig()->getNode('global/resources/default_setup/connection');
         $rootpath = $this->_getRootPath();
