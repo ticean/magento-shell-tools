@@ -21,7 +21,7 @@ The Tools
  - **snapshot**: Create a compressed tar archive of the /media directory and a database dump into 
    a directory called /snapshot.  Useful for developers bootstrapping their local environments off 
    of an existing development environment.
-
+ - More to be added...
 
 Usage
 -------------------
