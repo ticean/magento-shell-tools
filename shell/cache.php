@@ -9,7 +9,7 @@
  *
  * @category    Guidance
  * @package     Mage_Shell
- * @copyright   Copyright (c) 2010 Ticean Bennett (http://ticean.com)
+ * @copyright   Copyright (c) 2010 Guidance Solutions, Inc. (http://www.guidance.com)
  * @license     http://www.opensource.org/licenses/osl-3.0.php
  */
 
