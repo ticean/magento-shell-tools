@@ -18,9 +18,10 @@ The Tools
 
  - **cache**: All functionality that exists in the admin cache management panel. Plus some more!
    Really useful in deployment scripts.
- - **snapshot**: Create a compressed tar archive of the /media directory and a database dump into 
-   a directory called /snapshot.  Useful for developers bootstrapping their local environments off 
+ - **snapshot**: Create a compressed tar archive of the /media directory and a database dump into
+   a directory called /snapshot.  Useful for developers bootstrapping their local environments off
    of an existing development environment.
+ - **templater**: Copy template files to current package and theme (for modification).
  - More to be added...
 
 Usage
@@ -42,7 +43,7 @@ Here's example help output from the cache tool:
       help                          This help.
 
       <cachetype>     Comma separated cache codes or value "all" for all caches
-    
+
 
 Requirements
 -------------------
