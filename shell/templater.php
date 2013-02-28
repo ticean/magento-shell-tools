@@ -53,7 +53,22 @@ class Mage_Shell_Templater extends Mage_Shell_Abstract
             echo 'Copying template "'.$template.'" to current package and theme.', "\n";
             echo 'Source:       ', $source, "\n";
             echo 'Destination:  ', $dest, "\n";
+
+            // Create destination dirs if not exists
+            $path = '';
+            $dirs = array_filter(explode('/', $dest));
+            array_pop($dirs);
+            foreach($dirs as $dir) {
+                $path = $path.'/'.$dir;
+                if(!is_dir($path) && !file_exists($path)) {
+                    mkdir($path);
+                }
+            }
+
             copy($source, $dest);
+            if(!file_exists($dest)) {
+                echo 'Error:    Could not copy template.', "\n";
+            }
         }
         else {
             echo 'Error:  Template path don\'t exists', "\n",
