@@ -45,26 +45,26 @@ Here's example help output from the cache tool:
 
 Snapshot:
 
-Usage:  php -f snapshot.php -- [options]
+    Usage:  php -f snapshot.php -- [options]
 
-Options:
+    Options:
 
-  help              This help
+      help              This help
                 
-  --export [uat|live|???]  Take snapshot of the given remote server
-  --import [uat|live|???] <dbname>  [import options] Impot the given snapshot
+      --export [uat|live|???]  Take snapshot of the given remote server
+      --import [uat|live|???] <dbname>  [import options] Impot the given snapshot
   
-  Import Options: 
-  --name <name> Name of new import db. If none given, current shell user_[uat|live|???] will be used.              
-  --drop    drop the import database if exists
+      Import Options: 
+      --name <name> Name of new import db. If none given, current shell user_[uat|live|???] will be used.              
+      --drop    drop the import database if exists
       
-  include-images  Also bring down images folder        
+      include-images  Also bring down images folder        
 
 Configuring snapshot:
 
 In app/etc/local.xml place directive for servers that can be snapshoted:
 
-<resources>
+    <resources>
             <snapshots>
                 <uat>
                    <connection>
@@ -123,7 +123,7 @@ In app/etc/local.xml place directive for servers that can be snapshoted:
                    </import>    
                 </uat>        
             </snapshots>
-</reseources>
+    </reseources>
 
 Requirements
 -------------------
