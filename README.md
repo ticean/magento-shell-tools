@@ -18,10 +18,10 @@ The Tools
 
  - **cache**: All functionality that exists in the admin cache management panel. Plus some more!
    Really useful in deployment scripts.
- - **snapshot**: Create a compressed tar archive of the /media directory and a database dump into 
-   a directory called /snapshot.  Useful for developers bootstrapping their local environments off 
-   of an existing development environment.
- - More to be added...
+ - **snapshot**: Import / Export remote databases, and media folder (optional) to a local snapshot folder.
+   Remote hosts controlled via entries in local.xml.
+   ability to run sql commands on the import of the snapshot to reconfigure for local dev work.
+   Ignore some tables data (but structure is gotten.
 
 Usage
 -------------------
@@ -42,13 +42,97 @@ Here's example help output from the cache tool:
       help                          This help.
 
       <cachetype>     Comma separated cache codes or value "all" for all caches
-    
+
+Snapshot:
+
+Usage:  php -f snapshot.php -- [options]
+
+Options:
+
+  help              This help
+                
+  --export [uat|live|???]  Take snapshot of the given remote server
+  --import [uat|live|???] <dbname>  [import options] Impot the given snapshot
+  
+  Import Options: 
+  --name <name> Name of new import db. If none given, current shell user_[uat|live|???] will be used.              
+  --drop    drop the import database if exists
+      
+  include-images  Also bring down images folder        
+
+Configuring snapshot:
+
+In app/etc/local.xml place directive for servers that can be snapshoted:
+
+<resources>
+            <snapshots>
+                <uat>
+                   <connection>
+                            <host><![CDATA[localhost]]></host>
+                            <ssh_username><![CDATA[lucas]]></ssh_username>
+                            <db_username><![CDATA[username]]></db_username>
+                            <db_password><![CDATA[password]]></db_password>
+                            <dbname><![CDATA[some_database]]></dbname>
+                   </connection>
+                   <structure>
+                       <ignore_tables>log_customer,log_quote,log_summary,log_summary_type,log_url,log_url_info,log_visitor,log_visitor_info,log_visitor_online</ignore_tables>
+                   </structure>
+                   <import>
+                        <core_config_data>   
+                            <update>
+                                <where>
+                                    <field><![CDATA[path]]></field>
+                                    <value><![CDATA[web/secure/use_in_frontend]]></value>
+                                </where>
+                                <set>
+                                    <field><![CDATA[value]]></field>
+                                    <value><![CDATA[0]]></value>
+                                </set>
+                            </update>
+                            <update>
+                                <where>
+                                    <field><![CDATA[path]]></field>
+                                    <value><![CDATA[web/secure/use_in_adminhtml]]></value>
+                                </where>
+                                <set>
+                                    <field><![CDATA[value]]></field>
+                                    <value><![CDATA[0]]></value>
+                                </set>
+                            </update>
+                            <update>
+                                <where>
+                                    <field><![CDATA[path]]></field>
+                                    <value><![CDATA[web/unsecure/base_url]]></value>
+                                </where>
+                                <set>
+                                    <field><![CDATA[value]]></field>
+                                    <value><![local_dev_url]]></value>
+                                </set>
+                            </update>
+                            <update>
+                                <where>
+                                    <field><![CDATA[path]]></field>
+                                    <value><![CDATA[web/secure/base_url]]></value>
+                                </where>
+                                <set>
+                                    <field><![CDATA[value]]></field>
+                                    <value><![CDATA[local_dev_url]]></value>
+                                </set>
+                            </update>
+                        </core_config_data>
+                   </import>    
+                </uat>        
+            </snapshots>
+</reseources>
 
 Requirements
 -------------------
 
 Magento (with shell). The script was developed on EE 1.9, but should work with any Magento version that has the /shell
 directory.
+for snapshot to/from remote hosts, you would ideally need to have ssh keys installed. 
+The process does a remote ssh command to make the snapshot as a 'over the wire' mysqldump will lock the database for a loooong time.
+If no ssh key is sinstalled you will get prompted for password many times.
 
 
 Installation
