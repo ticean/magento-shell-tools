@@ -22,6 +22,7 @@ require_once 'abstract.php';
  * @category    Guidance
  * @package     Mage_Shell
  * @author      Gordon Knoppe
+ * @author      Lucas van Staden
  */
 class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
 
@@ -65,7 +66,7 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
         passthru("zcat {$snapshot}/{$this->getArg('import')}_data.sql.gz | mysql -h {$connection->host} -u {$connection->username} --password={$connection->password} {$dbname}");
 
 
-        //lets manipulate the database.
+        // lets manipulate the database.
         // magento's base config model merges tags, thus having multiple tags of the same name in our import tag does not work right.
         // parse the file ourself, so we can use the nodes correctly
         // since magento is connected to your current db, let make a new zend connection to the new db
@@ -197,14 +198,14 @@ Options:
 
   help              This help
                 
-  --export [uat|live|???]  Take snapshot of the given remote server
-  --import [uat|live|???] <dbname>  [import options] Impot the given snapshot
+  --export [server]  Take snapshot of the given remote server [must be defined in local.xml]
+  --import [server] <dbname>  [import options] Import the given snapshot
   
   Import Options: 
-  --name <name> Name of new import db. If none given, current shell user_[uat|live|???] will be used.              
+  --name <name> Name of new import db. If none given, [current_shell_user]_[default_store_name]_[server] will be used.              
   --drop    drop the import database if exists
       
-  include-images  Also bring down images folder              
+  include-images  Also bring down images folder  [manual extraction required, placed in snapshot folder]            
   
 USAGE;
     }
