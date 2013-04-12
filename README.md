@@ -51,14 +51,14 @@ Snapshot:
 
       help              This help
                 
-      --export [uat|live|???]  Take snapshot of the given remote server
-      --import [uat|live|???] <dbname>  [import options] Impot the given snapshot
+      --export [server]  Take snapshot of the given remote server
+      --import [server] <dbname>  [import options] Import the given snapshot
   
       Import Options: 
-      --name <name> Name of new import db. If none given, current shell user_[uat|live|???] will be used.              
+      --name <name> Name of new import db. If none given, [current_shell_user]_[default_store_name]_[server] will be used.              
       --drop    drop the import database if exists
       
-      include-images  Also bring down images folder        
+      include-images  Also bring down images folder [manual extraction required, file is placed in snapshot folder]       
 
 Configuring snapshot:
 
@@ -75,7 +75,7 @@ In app/etc/local.xml place directive for servers that can be snapshoted:
                             <dbname><![CDATA[some_database]]></dbname>
                    </connection>
                    <structure>
-                       <ignore_tables>log_customer,log_quote,log_summary,log_summary_type,log_url,log_url_info,log_visitor,log_visitor_info,log_visitor_online</ignore_tables>
+                       <ignore_tables>importexport_importdata,dataflow_batch,dataflow_import_data,report_event,dataflow_batch_import,dataflow_batch_export,import_export,log_customer,log_quote,log_summary,log_summary_type,log_url,log_url_info,log_visitor,log_visitor_info,log_visitor_online</ignore_tables>
                    </structure>
                    <import>
                         <core_config_data>   
@@ -132,7 +132,7 @@ Magento (with shell). The script was developed on EE 1.9, but should work with a
 directory.
 for snapshot to/from remote hosts, you would ideally need to have ssh keys installed. 
 The process does a remote ssh command to make the snapshot as a 'over the wire' mysqldump will lock the database for a loooong time.
-If no ssh key is sinstalled you will get prompted for password many times.
+If no ssh key is installed you will get prompted for password many times!
 
 
 Installation
@@ -145,3 +145,4 @@ License
 -------------------
 http://www.opensource.org/licenses/osl-3.0.php
 
+Snapshot updated by Lucas van Staden (lucas@dhmedia.com.au)
