@@ -56,7 +56,7 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
             passthru("echo Y | mysqladmin -h {$connection->host} -u {$connection->username} --password={$connection->password} drop {$dbname}");
         }
         // create the db
-        echo "Creating Database: " . $dbname;
+        echo "Creating Database: " . $dbname . "\n";
         passthru("mysqladmin -h {$connection->host} -u {$connection->username} --password={$connection->password} create {$dbname}");
         // import structure
         echo "Importing structure...\n";
