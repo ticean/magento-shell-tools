@@ -70,6 +70,7 @@ In app/etc/local.xml place directive for servers that can be snapshoted:
                    <connection>
                             <host><![CDATA[localhost]]></host>
                             <ssh_username><![CDATA[lucas]]></ssh_username>
+                            <ssh_port><![CDATA[22]]></ssh_port>
                             <db_username><![CDATA[username]]></db_username>
                             <db_password><![CDATA[password]]></db_password>
                             <dbname><![CDATA[some_database]]></dbname>

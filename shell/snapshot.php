@@ -45,7 +45,7 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
         # Initialize configuration values
         $connection = Mage::getConfig()->getNode('global/resources/default_setup/connection');
 
-        if ($dname == $connection->dbname) {
+        if ($dbname == $connection->dbname) {
             die('Sorry, you cannot import directly into the current active database {$dbname}. Things WILL break');
         }
 
@@ -145,21 +145,21 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
 
         if ($this->getArg('include-images')) {
             # Create the media archive
-            passthru("ssh {$connection->ssh_username}@{$connection->host} tar -chz -C \"$rootpath\" -f \"~/media.tgz\" media");
-            passthru("scp {$connection->ssh_username}@{$connection->host}:~/media.tgz {$snapshot}");
-            passthru("ssh {$connection->ssh_username}@{$connection->host} 'rm -rf ~/media.tgz'");
+            passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} tar -chz -C \"$rootpath\" -f \"~/media.tgz\" media");
+            passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/media.tgz {$snapshot}");
+            passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/media.tgz'");
         }
 
         # Dump the database
         echo "Extracting structure...\n";
-        passthru("ssh {$connection->ssh_username}@{$connection->host} 'mysqldump -d -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} | gzip > \"{$this->getArg('export')}_structure.sql.gz\"'");
-        passthru("scp {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_structure.sql.gz {$snapshot}");
-        passthru("ssh {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_structure.sql.gz'");
+        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'mysqldump -d -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} | gzip > \"{$this->getArg('export')}_structure.sql.gz\"'");
+        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_structure.sql.gz {$snapshot}");
+        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_structure.sql.gz'");
 
         echo "Extracting data...\n";
-        passthru("ssh {$connection->ssh_username}@{$connection->host} 'mysqldump -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} $ignoreTables | gzip > \"{$this->getArg('export')}_data.sql.gz\"'");
-        passthru("scp {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_data.sql.gz {$snapshot}");
-        passthru("ssh {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_data.sql.gz'");
+        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'mysqldump -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} $ignoreTables | gzip > \"{$this->getArg('export')}_data.sql.gz\"'");
+        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_data.sql.gz {$snapshot}");
+        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_data.sql.gz'");
         
         echo "Done\n";
     }
