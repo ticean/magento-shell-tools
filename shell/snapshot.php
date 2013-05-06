@@ -119,6 +119,7 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
      * Perform snapshot
      */
     function _snapshot() {
+        $timestamp = time(); 
         # Check to make sure Magento is installed
         if (!Mage::isInstalled()) {
             echo "Application is not installed yet, please complete install wizard first.";
@@ -142,6 +143,7 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
 
         $rootpath = $this->_getRootPath();
         $snapshot = $rootpath . 'snapshot';
+        $remotepath = "~/public_html/";
 
         # Create the snapshot directory if not exists
         $io = new Varien_Io_File();
@@ -149,21 +151,22 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
 
         if ($this->getArg('include-images')) {
             # Create the media archive
-            passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} tar -chz -C \"$rootpath\" -f \"~/media.tgz\" media");
-            passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/media.tgz {$snapshot}");
-            passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/media.tgz'");
+            echo "Pulling Media...\n";
+            passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} tar -chz -C \"$remotepath\" -f \"~/media_".$timestamp.".tgz\" media");
+            passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/media_".$timestamp.".tgz {$snapshot}");
+            passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/media_".$timestamp.".tgz'");
         }
 
         # Dump the database
         echo "Extracting structure...\n";
-        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'mysqldump -d -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} | gzip > \"{$this->getArg('export')}_structure.sql.gz\"'");
-        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_structure.sql.gz {$snapshot}");
-        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_structure.sql.gz'");
+        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'mysqldump -d -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} | gzip > \"{$this->getArg('export')}_structure_".$timestamp.".sql.gz\"'");
+        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_structure_".$timestamp.".sql.gz {$snapshot}/{$this->getArg('export')}_structure.sql.gz");
+        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_structure_".$timestamp.".sql.gz'");
 
         echo "Extracting data...\n";
-        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'mysqldump -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} $ignoreTables | gzip > \"{$this->getArg('export')}_data.sql.gz\"'");
-        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_data.sql.gz {$snapshot}");
-        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_data.sql.gz'");
+        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'mysqldump -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} $ignoreTables | gzip > \"{$this->getArg('export')}_data_".$timestamp.".sql.gz\"'");
+        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_data_".$timestamp.".sql.gz {$snapshot}/{$this->getArg('export')}_data.sql.gz");
+        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_data_".$timestamp.".sql.gz'");
         
         echo "Done\n";
     }
@@ -209,7 +212,7 @@ Options:
   --name <name> Name of new import db. If none given, [current_shell_user]_[default_store_name]_[server] will be used.              
   --drop    drop the import database if exists
       
-  include-images  Also bring down images folder  [manual extraction required, placed in snapshot folder]            
+  --include-images  Also bring down images folder  [manual extraction required, placed in snapshot folder]            
   
 USAGE;
     }
