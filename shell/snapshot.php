@@ -132,6 +132,10 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
             echo $this->usageHelp();
             die();
         }
+        
+        if(empty($connection->ssh_port)) {
+            $connection->ssh_port = 22;
+        }
 
         $structureOnly = Mage::getConfig()->getNode('global/resources/snapshots/' . $this->getArg('export') . '/structure');
         $ignoreTables = " --ignore-table={$connection->dbname}." . implode(" --ignore-table={$connection->dbname}.", explode(',', $structureOnly->ignore_tables));
