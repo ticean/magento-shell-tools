@@ -90,7 +90,10 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
 
         $xmlPath = Mage::getBaseDir('etc') . DS . 'local.xml';
         $xmlObj = simplexml_load_string(file_get_contents($xmlPath));
-        foreach ($xmlObj->global->resources->snapshots->uat->import as $key => $importUpdates) {
+
+        $importName = $this->getArg('import');
+
+        foreach ($xmlObj->global->resources->snapshots->$importName->import as $key => $importUpdates) {
             foreach ($importUpdates as $tableName => $changes) {
                 foreach ($changes as $changeKey => $updateData) {
                     switch ($changeKey) {
@@ -160,12 +163,12 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
         # Dump the database
         echo "Extracting structure...\n";
         passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'mysqldump -d -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} | gzip > \"{$this->getArg('export')}_structure_".$timestamp.".sql.gz\"'");
-        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_structure_".$timestamp.".sql.gz {$snapshot}/{$this->getArg('export')}_structure.sql.gz");
+        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_structure_".$timestamp.".sql.gz {$snapshot}");
         passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_structure_".$timestamp.".sql.gz'");
 
         echo "Extracting data...\n";
         passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'mysqldump -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} $ignoreTables | gzip > \"{$this->getArg('export')}_data_".$timestamp.".sql.gz\"'");
-        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_data_".$timestamp.".sql.gz {$snapshot}/{$this->getArg('export')}_data.sql.gz");
+        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_data_".$timestamp.".sql.gz {$snapshot}");
         passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_data_".$timestamp.".sql.gz'");
         
         echo "Done\n";
