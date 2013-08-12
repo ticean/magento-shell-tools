@@ -22,7 +22,6 @@ require_once 'abstract.php';
  * @category    Guidance
  * @package     Mage_Shell
  * @author      Gordon Knoppe
- * @author      Lucas van Staden
  */
 class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
 
@@ -45,7 +44,7 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
         # Initialize configuration values
         $connection = Mage::getConfig()->getNode('global/resources/default_setup/connection');
 
-        if ($dbname == $connection->dbname) {
+        if ($dname == $connection->dbname) {
             die('Sorry, you cannot import directly into the current active database {$dbname}. Things WILL break');
         }
 
@@ -56,7 +55,6 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
             passthru("echo Y | mysqladmin -h {$connection->host} -u {$connection->username} --password={$connection->password} drop {$dbname}");
         }
         // create the db
-        echo "Creating Database: " . $dbname . "\n";
         passthru("mysqladmin -h {$connection->host} -u {$connection->username} --password={$connection->password} create {$dbname}");
         // import structure
         echo "Importing structure...\n";
@@ -66,7 +64,7 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
         passthru("zcat {$snapshot}/{$this->getArg('import')}_data.sql.gz | mysql -h {$connection->host} -u {$connection->username} --password={$connection->password} {$dbname}");
 
 
-        // lets manipulate the database.
+        //lets manipulate the database.
         // magento's base config model merges tags, thus having multiple tags of the same name in our import tag does not work right.
         // parse the file ourself, so we can use the nodes correctly
         // since magento is connected to your current db, let make a new zend connection to the new db
@@ -90,10 +88,7 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
 
         $xmlPath = Mage::getBaseDir('etc') . DS . 'local.xml';
         $xmlObj = simplexml_load_string(file_get_contents($xmlPath));
-
-        $importName = $this->getArg('import');
-
-        foreach ($xmlObj->global->resources->snapshots->$importName->import as $key => $importUpdates) {
+        foreach ($xmlObj->global->resources->snapshots->uat->import as $key => $importUpdates) {
             foreach ($importUpdates as $tableName => $changes) {
                 foreach ($changes as $changeKey => $updateData) {
                     switch ($changeKey) {
@@ -122,7 +117,6 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
      * Perform snapshot
      */
     function _snapshot() {
-        $timestamp = time(); 
         # Check to make sure Magento is installed
         if (!Mage::isInstalled()) {
             echo "Application is not installed yet, please complete install wizard first.";
@@ -136,17 +130,12 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
             echo $this->usageHelp();
             die();
         }
-        
-        if(empty($connection->ssh_port)) {
-            $connection->ssh_port = 22;
-        }
 
         $structureOnly = Mage::getConfig()->getNode('global/resources/snapshots/' . $this->getArg('export') . '/structure');
         $ignoreTables = " --ignore-table={$connection->dbname}." . implode(" --ignore-table={$connection->dbname}.", explode(',', $structureOnly->ignore_tables));
 
         $rootpath = $this->_getRootPath();
         $snapshot = $rootpath . 'snapshot';
-        $remotepath = "~/public_html/";
 
         # Create the snapshot directory if not exists
         $io = new Varien_Io_File();
@@ -154,22 +143,21 @@ class Guidance_Shell_Snapshot extends Mage_Shell_Abstract {
 
         if ($this->getArg('include-images')) {
             # Create the media archive
-            echo "Pulling Media...\n";
-            passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} tar -chz -C \"$remotepath\" -f \"~/media_".$timestamp.".tgz\" media");
-            passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/media_".$timestamp.".tgz {$snapshot}");
-            passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/media_".$timestamp.".tgz'");
+            passthru("ssh {$connection->ssh_username}@{$connection->host} tar -chz -C \"$rootpath\" -f \"~/media.tgz\" media");
+            passthru("scp {$connection->ssh_username}@{$connection->host}:~/media.tgz {$snapshot}");
+            passthru("ssh {$connection->ssh_username}@{$connection->host} 'rm -rf ~/media.tgz'");
         }
 
         # Dump the database
         echo "Extracting structure...\n";
-        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'mysqldump -d -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} | gzip > \"{$this->getArg('export')}_structure_".$timestamp.".sql.gz\"'");
-        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_structure_".$timestamp.".sql.gz {$snapshot}");
-        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_structure_".$timestamp.".sql.gz'");
+        passthru("ssh {$connection->ssh_username}@{$connection->host} 'mysqldump -d -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} | gzip > \"{$this->getArg('export')}_structure.sql.gz\"'");
+        passthru("scp {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_structure.sql.gz {$snapshot}");
+        passthru("ssh {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_structure.sql.gz'");
 
         echo "Extracting data...\n";
-        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'mysqldump -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} $ignoreTables | gzip > \"{$this->getArg('export')}_data_".$timestamp.".sql.gz\"'");
-        passthru("scp -P {$connection->ssh_port} {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_data_".$timestamp.".sql.gz {$snapshot}");
-        passthru("ssh -p {$connection->ssh_port} {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_data_".$timestamp.".sql.gz'");
+        passthru("ssh {$connection->ssh_username}@{$connection->host} 'mysqldump -h localhost -u {$connection->db_username} --password={$connection->db_password} {$connection->dbname} $ignoreTables | gzip > \"{$this->getArg('export')}_data.sql.gz\"'");
+        passthru("scp {$connection->ssh_username}@{$connection->host}:~/{$this->getArg('export')}_data.sql.gz {$snapshot}");
+        passthru("ssh {$connection->ssh_username}@{$connection->host} 'rm -rf ~/{$this->getArg('export')}_data.sql.gz'");
         
         echo "Done\n";
     }
@@ -208,14 +196,14 @@ Options:
 
   help              This help
                 
-  --export [server]  Take snapshot of the given remote server [must be defined in local.xml]
-  --import [server] <dbname>  [import options] Import the given snapshot
+  --export [uat|live|???]  Take snapshot of the given remote server
+  --import [uat|live|???] <dbname>  [import options] Impot the given snapshot
   
   Import Options: 
-  --name <name> Name of new import db. If none given, [current_shell_user]_[default_store_name]_[server] will be used.              
+  --name <name> Name of new import db. If none given, current shell user_[uat|live|???] will be used.              
   --drop    drop the import database if exists
       
-  --include-images  Also bring down images folder  [manual extraction required, placed in snapshot folder]            
+  include-images  Also bring down images folder              
   
 USAGE;
     }
