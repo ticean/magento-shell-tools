@@ -193,7 +193,7 @@ Options:
   --fetch [server] Do export and import in one go.  Current database will be replaced with update 
   
   --export-remote [server]  Take snapshot of the given remote server [must be defined in snapshot.xml]
-  --import [server] <dbname>  [import options] Import the given snapshot
+  --import [server] Import the given snapshot
    
 USAGE;
     }
