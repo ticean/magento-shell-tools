@@ -144,16 +144,28 @@ class DogHouse_Shell_Snapshot extends Mage_Shell_Abstract {
         }
 
 
+        $db->getProfiler()->setEnabled(true);
+        
         foreach ($this->_snapshotXml->$profile->import as $key => $importUpdates) {
             foreach ($importUpdates as $tableName => $changes) {
                 foreach ($changes as $changeKey => $updateData) {
+                    $where = $updateData->where->field . " = '" . $updateData->where->value . "'";
                     switch ($changeKey) {
                         case 'update':
                             try {
-                                $db->getProfiler()->setEnabled(true);
-                                $where = $updateData->where->field . " = '" . $updateData->where->value . "'";
                                 $db->update($tableName, array((string) $updateData->set->field => (string) $updateData->set->value), $where);
                                 echo "UPDATE: {$tableName} {$updateData->where->value} => {$updateData->set->value}\n";
+                            } catch (Exception $e) {
+                                echo"Failed to do an update:";
+                                Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+                                Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+                                $db->getProfiler()->setEnabled(false);
+                            }
+                            break;
+                        case 'delete':
+                            try {
+                                $db->delete($tableName, $where);
+                                echo "DELETE: {$tableName} {$updateData->where->value}\n";
                             } catch (Exception $e) {
                                 echo"Failed to do an update:";
                                 Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
@@ -181,8 +193,7 @@ class DogHouse_Shell_Snapshot extends Mage_Shell_Abstract {
 
 Snapshot
 
-Saves a tarball of the media directory and a gzipped database dump
-taken with mysqldump
+export/import mysql magento db
 
 Usage:  php -f $self -- [options]
 

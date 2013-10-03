@@ -53,16 +53,12 @@
                         <value><![CDATA[{{base_url}}]]></value>
                     </set>
                 </update>
-                <update>
+                <delete>
                     <where>
                         <field><![CDATA[path]]></field>
                         <value><![CDATA[web/cookie/cookie_domain]]></value>
                     </where>
-                    <set>
-                        <field><![CDATA[value]]></field>
-                        <value><![CDATA['']]></value>
-                    </set>
-                </update>
+                </delete>
                 <update>
                     <where>
                         <field><![CDATA[path]]></field>
