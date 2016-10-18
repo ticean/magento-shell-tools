@@ -101,6 +101,14 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
      */
     public function info() {
         $invalidTypes = $this->_getInvalidatedTypes();
+        $line = '--------------------------+--------------+-----------+-------------------------------+' . "\n";
+        echo $line;
+        echo sprintf(' %-25s|','Cache ID');
+        echo sprintf(' %-13s|','Cache Status');
+        echo sprintf(' %-10s|','Validity');
+        echo sprintf(' %-30s|','Cache Type');
+        echo "\n";
+        echo $line;
         foreach($this->_getCacheTypes() as $cache) {
             $enabled = ($cache->status)? 'Enabled':'Disabled';
             if($enabled=='Enabled') {
@@ -109,11 +117,13 @@ class Guidance_Shell_Cache extends Mage_Shell_Abstract
                 $invalid = 'N/A';
             }
 
-            echo sprintf('%-16s', $cache->id);
-            echo sprintf('%-12s', $enabled);
-            echo sprintf('%-10s', $invalid);
-            echo  $cache->cache_type . "\n";
+            echo sprintf(' %-25s|', $cache->id);
+            echo sprintf(' %-13s|', $enabled);
+            echo sprintf(' %-10s|', $invalid);
+            echo sprintf(' %-30s|', $cache->cache_type);
+            echo  "\n";
         }
+        echo $line;
     }
 
     /**
