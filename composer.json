@@ -1,0 +1,13 @@
+{
+    "name": "ticean/magento-shell-tools",
+    "description": "Mage_Shell scripts to help manage Magento installations",
+    "type": "magento-module",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "name": "Ticean Bennett",
+            "email": "ticean@gmail.com"
+        }
+    ],
+    "require": {}
+}
