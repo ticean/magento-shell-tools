@@ -1,0 +1,25 @@
+{
+    "name": "ticean/magento-shell-tools",
+    "description": "Mage_Shell scripts to help manage Magento installations",
+    "type": "magento-module",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "name": "Ticean Bennett",
+            "email": "ticean@gmail.com"
+        }
+    ],
+    "scripts": {
+        "gen-modman": ["./vendor/bin/generate-modman"]
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/mhauri/generate-modman"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "generate-modman/generate-modman": "dev-master"
+    }
+}

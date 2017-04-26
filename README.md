@@ -18,8 +18,8 @@ The Tools
 
  - **cache**: All functionality that exists in the admin cache management panel. Plus some more!
    Really useful in deployment scripts.
- - **snapshot**: Create a compressed tar archive of the /media directory and a database dump into 
-   a directory called /snapshot.  Useful for developers bootstrapping their local environments off 
+ - **snapshot**: Create a compressed tar archive of the /media directory and a database dump into
+   a directory called /snapshot.  Useful for developers bootstrapping their local environments off
    of an existing development environment.
  - More to be added...
 
@@ -42,7 +42,7 @@ Here's example help output from the cache tool:
       help                          This help.
 
       <cachetype>     Comma separated cache codes or value "all" for all caches
-    
+
 
 Requirements
 -------------------
@@ -54,10 +54,65 @@ directory.
 Installation
 --------------------
 
+### Manual
+
 Installation is very simple! Clone/copy the contents of /shell to your Magento /shell directory.
 
+### Composer
+
+1.  Setup
+    [magento-composer-installer](https://github.com/Cotya/magento-composer-installer)
+
+1.  Add repository to `composer.json`
+
+    ```json
+    {
+        "repositories": [
+            {
+                "type": "git",
+                "url": "https://github.com/ticean/magento-shell-tools"
+            }
+        ]
+    }
+    ```
+
+1.  Install module
+
+    ```sh
+    composer require ticean/magento-shell-tools:dev-master
+    ```
+
+Releasing
+---------
+
+1. Bump the version in `composer.json`
+1. Update `composer.lock`
+
+    ```sh
+    composer update --lock
+    ```
+
+1. Generate `modman`
+
+    ```sh
+    composer run gen-modman
+    ```
+
+1. Commit the version bump and modman file
+1. Tag your version
+
+    :warning: Don't add a leading `v` to the version.
+
+    ```sh
+    git tag a.b.c
+    ```
+
+1. Push to master
+
+    ```sh
+    git push && git push --tags
+    ```
 
 License
 -------------------
 http://www.opensource.org/licenses/osl-3.0.php
-
