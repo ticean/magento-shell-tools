@@ -9,5 +9,17 @@
             "email": "ticean@gmail.com"
         }
     ],
-    "require": {}
+    "scripts": {
+        "gen-modman": ["./vendor/bin/generate-modman"]
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/mhauri/generate-modman"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "generate-modman/generate-modman": "dev-master"
+    }
 }
