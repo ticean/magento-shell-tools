@@ -82,6 +82,37 @@ Installation is very simple! Clone/copy the contents of /shell to your Magento /
     composer require ticean/magento-shell-tools:dev-master
     ```
 
+Releasing
+---------
+
+1. Bump the version in `composer.json`
+1. Update `composer.lock`
+
+    ```sh
+    composer update --lock
+    ```
+
+1. Generate `modman`
+
+    ```sh
+    composer run gen-modman
+    ```
+
+1. Commit the version bump and modman file
+1. Tag your version
+
+    :warning: Don't add a leading `v` to the version.
+
+    ```sh
+    git tag a.b.c
+    ```
+
+1. Push to master
+
+    ```sh
+    git push && git push --tags
+    ```
+
 License
 -------------------
 http://www.opensource.org/licenses/osl-3.0.php
